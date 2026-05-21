@@ -1,1 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laper App - Quantum Cyber Kantin</title>
+    <style>
+        /* --- FUTURISTIC CYBERPUNK THEME STYLE --- */
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --neon-red: #ff0055;
+            --neon-cyan: #00f2fe;
+            --neon-green: #39ff14;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
 
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Header Futuristik */
+        header {
+            background: linear-gradient(90deg, #1e1b4b, #311042);
+            border-bottom: 2px solid var(--neon-red);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 8px var(--neon-red);
+        }
+
+        header .status-node {
+            font-size: 12px;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 5px 12px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.2);
+        }
+
+        /* Layout Utama Grid & Sidebar */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            gap: 30px;
+        }
+
+        /* Sisi Kiri: Katalog Menu */
+        .katalog-section {
+            flex: 2;
+        }
+
+        .katalog-section h2 {
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-top: 0;
+            text-shadow: 0 0 5px rgba(255,255,255,0.2);
+        }
+
+        .cyber-line {
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+            margin-bottom: 20px;
+        }
+
+        /* Grid Cards Menu */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card-menu {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-menu:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+
+        .card-menu .kategori-tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--neon-cyan);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .card-menu h4 {
+            margin: 5px 0 10px 0;
+            font-size: 17px;
+            color: #ffffff;
+        }
+
+        .card-menu .harga {
+            font-size: 16px;
+            color: var(--neon-cyan);
+            font-family: monospace;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .btn-add {
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-add:hover {
+            background: var(--neon-cyan);
+            color: var(--bg-main);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Sisi Kanan: Panel Keranjang & Kasir */
+        .checkout-section {
+            flex: 1;
+            background: #111827;
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.1);
+            padding: 25px;
+            border-radius: 8px;
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+        }
+
+        .checkout-section h3 {
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--neon-red);
+            text-shadow: 0 0 5px rgba(255, 0, 85, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        /* List Items di Keranjang */
+        .cart-list {
+            margin-bottom: 20px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 12px;
+            border-left: 3px solid var(--neon-cyan);
+            margin-bottom: 8px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .btn-hapus-item {
+            background: none;
+            border: none;
+            color: var(--neon-red);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row input {
+            flex: 2;
+        }
+
+        .btn-promo {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .btn-promo:hover {
+            background: var(--neon-cyan);
+            color: black;
+        }
+
+        label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            background: #1e293b;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+
+        /* Notifikasi Diskon */
+        .notif-member {
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+
+        /* Nota Struk Digital */
+        .nota-total {
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .nota-total div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .nota-total .total-row {
+            font-size: 15px;
+            color: var(--neon-green);
+            font-weight: bold;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        /* Tombol Utama Kirim Pesanan */
+        .btn-checkout {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-checkout:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>⚡ Laper! CyberKantin</h1>
+    <div class="status-node">Quantum Sync Active</div>
+</header>
+
+<div class="main-container">
+    
+    <div class="katalog-section">
+        <h2>Daftar Menu Tersedia (Update Real-Time)</h2>
+        <div class="cyber-line"></div>
+        
+        <div class="menu-grid" id="containerMenu">
+            </div>
+    </div>
+
+    <div class="checkout-section">
+        <h3>⚡ Terminal Transaksi</h3>
+        
+        <div class="cart-list" id="isiKeranjang">
+            <p style="color: var(--text-muted); text-align: center; font-size: 13px; margin-top: 20px;">[ SINKRONISASI KERANJANG KOSONG ]</p>
+        </div>
+
+        <div id="notifUstadz" class="notif-member">
+            ❖ Core VIP: Akses Member Ustadz Dikenali (Potongan 20%)
+        </div>
+
+        <div class="form-group">
+            <label>ID / Nama Pembeli:</label>
+            <input type="text" id="namaCustomer" placeholder="Masukkan ID atau Nama..." oninput="hitungKalkulasiAkhir()">
+        </div>
+
+        <div class="form-group">
+            <label>Kode Kupon / Promo:</label>
+            <div class="form-row">
+                <input type="text" id="kodePromo" placeholder="Contoh: LAPERUNTUNG">
+                <button class="btn-promo" onclick="klaimKodePromo()">Klaim</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Protokol Layanan:</label>
+            <select id="layanan" onchange="hitungKalkulasiAkhir()">
+                <option value="ambil">Ambil Sendiri di Kantin (Normal)</option>
+                <option value="antrean">Booking Antrean Online (+Rp 2.000)</option>
+                <option value="delivery">Pesan Antar / Delivery Order (+Rp 5.000)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Metode Pembayaran:</label>
+            <select id="metodeBayar">
+                <option value="COD">COD (Bayar Tunai di Tempat)</option>
+                <option value="Langsung">Bayar Langsung / Transfer Digital</option>
+            </select>
+        </div>
+
+        <div class="nota-total">
+            <div><span>Subtotal Matrix:</span> <span id="txtSubtotal">Rp 0</span></div>
+            <div><span>Potongan Member (Ustadz):</span> <span id="txtDiskon" style="color: var(--neon-green);">-Rp 0</span></div>
+            <div><span>Diskon Kupon Manual:</span> <span id="txtDiskonKupon" style="color: var(--neon-green);">-Rp 0</span></div>
+            <div><span>Biaya Protokol:</span> <span id="txtBiayaTambahan">+Rp 0</span></div>
+            <div class="total-row">
+                <span>TOTAL AKHIR:</span> <span id="txtTotalAkhir">Rp 0</span>
+            </div>
+        </div>
+
+        <button class="btn-checkout" onclick="prosesBayar()">Konfirmasi & Enkripsi Pesanan</button>
+    </div>
+
+</div>
+
+<script>
+    const daftarUstadz = [
+        "Ustadz Abdul Somad",
+        "Ustadz Adi Hidayat",
+        "Ustadz Hanan Attaki",
+        "Ustadz Wijayanto",
+        "Ustadz Salim A. Fillah"
+    ];
+
+    let keranjang = [];
+    let menuToko = [];
+    
+    // Variasi potongan kupon tambahan diskon (nilai dalam Rupiah)
+    let nilaiDiskonKupon = 0; 
+
+    function sinkronisasiDataMenu() {
+        const dataLokal = localStorage.getItem("database_produk");
+        if (dataLokal) {
+            menuToko = JSON.parse(dataLokal);
+        } else {
+            menuToko = [
+                { id: 101, nama: "Cyber Ayam Geprek Hibrida", harga: 15000, kategori: "Makanan" },
+                { id: 102, nama: "Quantum Soto Medan", harga: 16000, kategori: "Makanan" },
+                { id: 103, nama: "Synthetik Mie Aceh Glow", harga: 13000, kategori: "Makanan" },
+                { id: 104, nama: "Virtual Es Dawet Solo", harga: 5000, kategori: "Minuman" },
+                { id: 105, nama: "Holographic Es Oyen", harga: 6000, kategori: "Minuman" },
+                { id: 106, nama: "Nano Gorengan Platter", harga: 7000, kategori: "Snack" }
+            ];
+            localStorage.setItem("database_produk", JSON.stringify(menuToko));
+        }
+    }
+
+    function tampilkanMenuKeGrid() {
+        const grid = document.getElementById('containerMenu');
+        grid.innerHTML = ""; 
+
+        menuToko.forEach(item => {
+            const card = `
+                <div class="card-menu">
+                    <div>
+                        <span class="kategori-tag">// ${item.kategori}</span>
+                        <h4>${item.nama}</h4>
+                    </div>
+                    <div>
+                        <div class="harga">Rp ${item.harga.toLocaleString('id-ID')}</div>
+                        <button class="btn-add" onclick="tambahKeKeranjang(${item.id})">🛒 Ambil</button>
+                    </div>
+                </div>
+            `;
+            grid.innerHTML += card;
+        });
+    }
+
+    function tambahKeKeranjang(idProduk) {
+        const produkDipilih = menuToko.find(item => item.id === idProduk);
+        if (produkDipilih) {
+            keranjang.push(produkDipilih);
+            updateTampilanKeranjang();
+        }
+    }
+
+    function hapusItemKeranjang(index) {
+        keranjang.splice(index, 1);
+        updateTampilanKeranjang();
+    }
+
+    function updateTampilanKeranjang() {
+        const divKeranjang = document.getElementById('isiKeranjang');
+        
+        if (keranjang.length === 0) {
+            divKeranjang.innerHTML = `<p style="color: var(--text-muted); text-align: center; font-size: 13px; margin-top: 20px;">[ SINKRONISASI KERANJANG KOSONG ]</p>`;
+            nilaiDiskonKupon = 0; // Reset kupon jika keranjang dikosongkan
+            document.getElementById('kodePromo').value = "";
+            hitungKalkulasiAkhir();
+            return;
+        }
+
+        divKeranjang.innerHTML = ""; 
+        keranjang.forEach((item, indeks) => {
+            divKeranjang.innerHTML += `
+                <div class="cart-item">
+                    <span>${item.nama}</span>
+                    <span>Rp ${item.harga.toLocaleString('id-ID')} 
+                        <button class="btn-hapus-item" onclick="hapusItemKeranjang(${indeks})">❌</button>
+                    </span>
+                </div>
+            `;
+        });
+
+        hitungKalkulasiAkhir();
+    }
+
+    // FUNGSI BARU: VALIDASI KODE DISKON MANUAL
+    function klaimKodePromo() {
+        if (keranjang.length === 0) {
+            alert("Keranjang masih kosong, tidak bisa klaim kode!");
+            return;
+        }
+        
+        const kode = document.getElementById('kodePromo').value.trim().toUpperCase();
+        
+        // Contoh kode promo: "LAPERUNTUNG" memotong Rp 3.000
+        if (kode === "LAPERUNTUNG") {
+            nilaiDiskonKupon = 3000;
+            alert("⚡ Kode Kupon Valid! Potongan Rp 3.000 diaktifkan.");
+        } else if (kode === "DISKONSEKOLAH") {
+            nilaiDiskonKupon = 5000;
+            alert("⚡ Kode Kupon Valid! Potongan Rp 5.000 diaktifkan.");
+        } else {
+            nilaiDiskonKupon = 0;
+            alert("❌ Kode Kupon Tidak Valid / Kadaluwarsa.");
+        }
+        
+        hitungKalkulasiAkhir();
+    }
+
+    function hitungKalkulasiAkhir() {
+        const namaInput = document.getElementById('namaCustomer').value.trim();
+        const layanan = document.getElementById('layanan').value;
+        const notif = document.getElementById('notifUstadz');
+
+        let subtotal = keranjang.reduce((total, item) => total + item.harga, 0);
+        let diskonUstadz = 0;
+        let biayaTambahan = 0;
+
+        // Syarat 1: Hitung Diskon Ustadz 20%
+        const apakahUstadzVIP = daftarUstadz.some(u => u.toLowerCase() === namaInput.toLowerCase());
+        if (apakahUstadzVIP && subtotal > 0) {
+            diskonUstadz = subtotal * 0.20; 
+            notif.style.display = "block";
+        } else {
+            notif.style.display = "none";
+        }
+
+        // Syarat 2 & 3: Biaya Antrean Online / Delivery
+        if (layanan === "antrean" && subtotal > 0) {
+            biayaTambahan = 2000; 
+        } else if (layanan === "delivery" && subtotal > 0) {
+            biayaTambahan = 5000; 
+        }
+
+        // Pastikan total tidak minus akibat potongan kupon
+        let totalAkhir = subtotal - diskonUstadz - nilaiDiskonKupon + biayaTambahan;
+        if (totalAkhir < 0) totalAkhir = 0;
+
+        document.getElementById('txtSubtotal').innerText = "Rp " + subtotal.toLocaleString('id-ID');
+        document.getElementById('txtDiskon').innerText = "-Rp " + diskonUstadz.toLocaleString('id-ID');
+        document.getElementById('txtDiskonKupon').innerText = "-Rp " + nilaiDiskonKupon.toLocaleString('id-ID');
+        document.getElementById('txtBiayaTambahan').innerText = "+Rp " + biayaTambahan.toLocaleString('id-ID');
+        document.getElementById('txtTotalAkhir').innerText = "Rp " + totalAkhir.toLocaleString('id-ID');
+    }
+
+    function prosesBayar() {
+        if (keranjang.length === 0) {
+            alert("Sistem Menolak: Keranjang Belanja Kosong!");
+            return;
+        }
+
+        const namaUser = document.getElementById('namaCustomer').value.trim() || "Siswa Umum";
+        const opsiLayanan = document.getElementById('layanan').value;
+        const metodeBayar = document.getElementById('metodeBayar').value;
+        const stringTotal = document.getElementById('txtTotalAkhir').innerText;
+        const listNamaMenu = keranjang.map(i => i.nama).join(", ");
+
+        let daftarPesanan = JSON.parse(localStorage.getItem("database_pesanan")) || [];
+
+        const invoiceBaru = {
+            id: "LPR-" + Math.floor(1000 + Math.random() * 9000),
+            pembeli: namaUser,
+            item: listNamaMenu,
+            layanan: opsiLayanan,
+            metode: metodeBayar, // Tersimpan untuk kebutuhan data admin
+            total: stringTotal,
+            statusTracking: "Diproses" 
+        };
+
+        daftarPesanan.push(invoiceBaru);
+        localStorage.setItem("database_pesanan", JSON.stringify(daftarPesanan));
+
+        alert(`🚀 Transaksi Sukses!\nID Invoice: ${invoiceBaru.id}\nMetode: ${metodeBayar}\nSilakan salin ID ini untuk melakukan tracking.`);
+        
+        keranjang = [];
+        nilaiDiskonKupon = 0;
+        document.getElementById('namaCustomer').value = "";
+        document.getElementById('kodePromo').value = "";
+        updateTampilanKeranjang();
+    }
+
+    window.onload = function() {
+        sinkronisasiDataMenu();
+        tampilkanMenuKeGrid();
+    };
+</script>
+
+</body>
+</html>

@@ -1,1 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laper App - Command Center Admin</title>
+    <style>
+        /* --- HIGH-TECH CYBERPUNK DASHBOARD THEME --- */
+        :root {
+            --bg-deep: #060913;
+            --bg-surface: rgba(16, 24, 48, 0.75);
+            --neon-cyan: #00f2fe;
+            --neon-magenta: #ff0055;
+            --neon-green: #39ff14;
+            --neon-yellow: #f1c40f;
+            --text-cyber: #e2e8f0;
+            --text-dark: #64748b;
+        }
 
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 242, 254, 0.08) 0, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 0, 85, 0.08) 0, transparent 50%);
+            color: var(--text-cyber);
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Cyber HUD */
+        header {
+            background: rgba(11, 15, 30, 0.9);
+            border-bottom: 2px solid var(--neon-cyan);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 25px rgba(0, 242, 254, 0.15);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .hud-status {
+            font-size: 11px;
+            font-family: monospace;
+            border: 1px solid var(--neon-magenta);
+            color: var(--neon-magenta);
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-shadow: 0 0 5px var(--neon-magenta);
+            box-shadow: inset 0 0 8px rgba(255, 0, 85, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; box-shadow: inset 0 0 15px rgba(255, 0, 85, 0.4); }
+            100% { opacity: 0.7; }
+        }
+
+        .main-wrapper {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        h2.section-title {
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2.section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Grid Indikator Status */
+        .stats-hud-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .hud-card {
+            background: var(--bg-surface);
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .hud-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 8px;
+            pointer-events: none;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.02);
+        }
+
+        .hud-card.orange-zone { border-color: rgba(241, 196, 15, 0.3); }
+        .hud-card.cyan-zone { border-color: rgba(0, 242, 254, 0.3); }
+        .hud-card.green-zone { border-color: rgba(57, 255, 20, 0.3); }
+
+        .hud-card p { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dark); }
+        .hud-card h3 { margin: 8px 0 0 0; font-size: 36px; font-family: monospace; font-weight: bold; }
+
+        /* Panel Tabel Utama */
+        .matrix-panel {
+            background: var(--bg-surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 18px 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7f8c8d;
+            border-bottom: 2px solid rgba(0, 242, 254, 0.2);
+        }
+
+        td {
+            padding: 18px 15px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        tr:hover td {
+            background: rgba(0, 242, 254, 0.03);
+            color: #fff;
+        }
+
+        /* Efek Badge Bercahaya (Glow Badge) */
+        .cyber-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--shadow-color);
+        }
+
+        .status-diproses { 
+            background: rgba(241, 196, 15, 0.1); color: var(--neon-yellow); border: 1px solid var(--neon-yellow);
+            --shadow-color: rgba(241, 196, 15, 0.2);
+        }
+        .status-diantar { 
+            background: rgba(0, 242, 254, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-cyan);
+            --shadow-color: rgba(0, 242, 254, 0.2);
+        }
+        .status-selesai { 
+            background: rgba(57, 255, 20, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green);
+            --shadow-color: rgba(57, 255, 20, 0.2);
+        }
+
+        .method-cod { 
+            background: rgba(255, 0, 85, 0.08); color: var(--neon-magenta); border: 1px solid var(--neon-magenta);
+            --shadow-color: rgba(255, 0, 85, 0.1);
+        }
+        .method-direct { 
+            background: rgba(0, 242, 254, 0.08); color: var(--neon-cyan); border: 1px solid var(--neon-cyan);
+            --shadow-color: rgba(0, 242, 254, 0.1);
+        }
+
+        /* Tombol Aksi Kontrol HUD */
+        .hud-btn {
+            background: transparent;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .hud-btn-dispatch {
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
+        }
+        .hud-btn-dispatch:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .hud-btn-complete {
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 0 0 5px rgba(57, 255, 20, 0.2);
+        }
+        .hud-btn-complete:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .lock-indicator {
+            color: var(--text-dark);
+            font-family: monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📡 CENTRAL LOGISTIC MATRIX (ADMIN)</h1>
+    <div class="hud-status">CORE SYSTEM: ACTIVE [SECURE]</div>
+</header>
+
+<div class="main-wrapper">
+    <h2 class="section-title">Monitoring Status Pengantaran & Data Pembeli</h2>
+    
+    <div class="stats-hud-grid">
+        <div class="hud-card orange-zone">
+            <p>// Antrean Dapur</p>
+            <h3 id="countDiproses" style="color: var(--neon-yellow); text-shadow: 0 0 10px rgba(241,196,15,0.4);">0</h3>
+        </div>
+        <div class="hud-card cyan-zone">
+            <p>// Sedang Diantar Kurir</p>
+            <h3 id="countDiantar" style="color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,242,254,0.4);">0</h3>
+        </div>
+        <div class="hud-card green-zone">
+            <p>// Transaksi Selesai</p>
+            <h3 id="countSelesai" style="color: var(--neon-green); text-shadow: 0 0 10px rgba(57,255,20,0.4);">0</h3>
+        </div>
+    </div>
+
+    <div class="matrix-panel">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Invoice</th>
+                    <th>Nama Pembeli</th>
+                    <th>Item Pesanan</th>
+                    <th>Protokol Layanan</th>
+                    <th>Metode Bayar</th>
+                    <th>Total Biaya</th>
+                    <th>Status Kirim</th>
+                    <th>Aksi Logistik</th>
+                </tr>
+            </thead>
+            <tbody id="tabelLogistikAdmin">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function muatDataLogistikAdmin() {
+        const tbody = document.getElementById('tabelLogistikAdmin');
+        tbody.innerHTML = ""; 
+
+        const daftarPesanan = JSON.parse(localStorage.getItem("database_pesanan")) || [];
+
+        let totalDiproses = 0;
+        let totalDiantar = 0;
+        let totalSelesai = 0;
+
+        if (daftarPesanan.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-dark); padding: 40px; font-family: monospace;">[ MENUNGGU TRANSMISI ENKRIPSI DATA TRANSAKSI... ]</td></tr>`;
+            updateKartuStatistik(0, 0, 0);
+            return;
+        }
+
+        // Tampilkan pesanan terbaru di paling atas
+        [...daftarPesanan].reverse().forEach(pesan => {
+            
+            if (pesan.statusTracking === "Diproses") totalDiproses++;
+            if (pesan.statusTracking === "Diantar Kurir") totalDiantar++;
+            if (pesan.statusTracking === "Selesai") totalSelesai++;
+
+            let classBadge = "status-diproses";
+            if (pesan.statusTracking === "Diantar Kurir") classBadge = "status-diantar";
+            if (pesan.statusTracking === "Selesai") classBadge = "status-selesai";
+
+            let classMetode = (pesan.metode === "COD") ? "method-cod" : "method-direct";
+            let teksMetode = (pesan.metode === "COD") ? "💵 COD" : "💳 ONLINE";
+
+            let tombolAksi = "";
+            if (pesan.statusTracking === "Diproses") {
+                tombolAksi = `<button class="hud-btn hud-btn-dispatch" onclick="ubahStatusArus('${pesan.id}', 'Diantar Kurir')">🚚 Kirim Kurir</button>`;
+            } else if (pesan.statusTracking === "Diantar Kurir") {
+                tombolAksi = `<button class="hud-btn hud-btn-complete" onclick="ubahStatusArus('${pesan.id}', 'Selesai')">✔ Selesai</button>`;
+            } else {
+                tombolAksi = `<span class="lock-indicator">🔒 ENCRYPTED</span>`;
+            }
+
+            const barisHTML = `
+                <tr>
+                    <td style="font-family: monospace; color: var(--neon-cyan); font-weight: bold;">${pesan.id}</td>
+                    <td><strong>${pesan.pembeli}</strong></td>
+                    <td style="color: #cbd5e1;">${pesan.item}</td>
+                    <td>${pesan.layanan === 'delivery' ? '🚀 Delivery' : pesan.layanan === 'antrean' ? '🕒 Antrean' : '🚶 Ambil'}</td>
+                    <td><span class="cyber-badge ${classMetode}">${teksMetode}</span></td>
+                    <td style="font-family: monospace; font-weight: bold; color: var(--neon-green);">${pesan.total}</td>
+                    <td><span class="cyber-badge ${classBadge}">${pesan.statusTracking}</span></td>
+                    <td>${tombolAksi}</td>
+                </tr>
+            `;
+            tbody.innerHTML += barisHTML;
+        });
+
+        updateKartuStatistik(totalDiproses, totalDiantar, totalSelesai);
+    }
+
+    function ubahStatusArus(idInvoice, statusBaru) {
+        let daftarPesanan = JSON.parse(localStorage.getItem("database_pesanan")) || [];
+        const indeks = daftarPesanan.findIndex(p => p.id === idInvoice);
+
+        if (indeks !== -1) {
+            daftarPesanan[indeks].statusTracking = statusBaru;
+            localStorage.setItem("database_pesanan", JSON.stringify(daftarPesanan));
+            muatDataLogistikAdmin(); 
+        }
+    }
+
+    function updateKartuStatistik(proses, antar, selesai) {
+        document.getElementById('countDiproses').innerText = proses;
+        document.getElementById('countDiantar').innerText = antar;
+        document.getElementById('countSelesai').innerText = selesai;
+    }
+
+    window.onload = muatDataLogistikAdmin;
+</script>
+
+</body>
+</html>

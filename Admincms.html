@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laper CMS - Data Architect Terminal</title>
+    <style>
+        /* --- CYBER DATA MANAGEMENT THEME --- */
+        :root {
+            --bg-deep: #020617;
+            --bg-glass: rgba(15, 23, 42, 0.8);
+            --neon-cyan: #00f2fe;
+            --neon-magenta: #ff0055;
+            --neon-green: #39ff14;
+            --neon-yellow: #f1c40f;
+            --text-cyber: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-deep);
+            background-image: 
+                linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px; /* Grid background effect */
+            color: var(--text-cyber);
+            min-height: 100vh;
+        }
+
+        /* Top HUD */
+        header {
+            background: rgba(2, 6, 23, 0.9);
+            border-bottom: 2px solid var(--neon-magenta);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--neon-magenta);
+        }
+
+        .system-load {
+            font-size: 11px;
+            font-family: monospace;
+            color: var(--neon-green);
+        }
+
+        .main-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        /* Sisi Kiri: Form Input Data */
+        .glass-card {
+            background: var(--bg-glass);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            height: fit-content;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        h2.card-title {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+            padding-bottom: 10px;
+        }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 20px; }
+        label { font-size: 11px; text-transform: uppercase; color: #94a3b8; display: block; margin-bottom: 8px; }
+        
+        input, select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 4px;
+            color: white;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+
+        /* Buttons */
+        .cyber-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+        .btn-primary:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid #64748b;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        /* Sisi Kanan: Tabel Matrix Produk */
+        .matrix-display {
+            background: var(--bg-glass);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #64748b;
+            padding: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.05);
+        }
+
+        td {
+            padding: 15px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .price-tag { color: var(--neon-green); font-family: monospace; font-weight: bold; }
+        .cat-tag { color: var(--neon-yellow); font-size: 11px; font-weight: bold; text-transform: uppercase; }
+
+        /* Action Buttons */
+        .action-btn {
+            background: transparent;
+            border: 1px solid;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+        .btn-edit { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .btn-edit:hover { background: var(--neon-yellow); color: #000; }
+        
+        .btn-delete { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+        .btn-delete:hover { background: var(--neon-magenta); color: #000; }
+
+        /* Status Empty */
+        .empty-msg { text-align: center; color: #475569; padding: 40px; font-style: italic; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>💾 PRODUCT ARCHITECT CMS</h1>
+    <div class="system-load">CORE_DATABASE: ONLINE // ACCESS_LEVEL: ADMIN</div>
+</header>
+
+<div class="main-wrapper">
+    
+    <div class="glass-card">
+        <h2 class="card-title" id="formTitle">➕ Injeksi Produk Baru</h2>
+        <form id="formCms">
+            <input type="hidden" id="editId">
+            
+            <div class="form-group">
+                <label>Nama Makanan / Jasa</label>
+                <input type="text" id="namaProduk" placeholder="Input string..." required>
+            </div>
+
+            <div class="form-group">
+                <label>Harga Satuan (Rp)</label>
+                <input type="number" id="hargaProduk" placeholder="Input integer..." required>
+            </div>
+
+            <div class="form-group">
+                <label>Kategori Produk</label>
+                <select id="kategoriProduk">
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Snack">Snack / Cemilan</option>
+                </select>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="cyber-btn btn-primary">Sync Data Produk</button>
+            <button type="button" id="btnBatal" class="cyber-btn btn-cancel" style="display: none;" onclick="resetForm()">Batalkan Protokol Edit</button>
+        </form>
+    </div>
+
+    <div class="matrix-display">
+        <h2 class="card-title">📦 Katalog Matrix Saat Ini</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Nama Produk</th>
+                    <th>Nilai Harga</th>
+                    <th>Kontrol Data</th>
+                </tr>
+            </thead>
+            <tbody id="tabelProduk">
+                </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    // --- LOGIKA UTAMA CMS ---
+
+    const form = document.getElementById('formCms');
+    const inputId = document.getElementById('editId');
+    const inputNama = document.getElementById('namaProduk');
+    const inputHarga = document.getElementById('hargaProduk');
+    const inputKategori = document.getElementById('kategoriProduk');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnBatal = document.getElementById('btnBatal');
+    const formTitle = document.getElementById('formTitle');
+
+    // 1. Tampilkan Data (READ)
+    function renderTabel() {
+        const tbody = document.getElementById('tabelProduk');
+        tbody.innerHTML = "";
+
+        const database = JSON.parse(localStorage.getItem("database_produk")) || [];
+
+        if(database.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-msg">[ DATA_NOT_FOUND: Harap masukkan data produk baru ]</td></tr>`;
+            return;
+        }
+
+        database.forEach(item => {
+            const row = `
+                <tr>
+                    <td><span class="cat-tag">${item.kategori}</span></td>
+                    <td><strong>${item.nama}</strong></td>
+                    <td><span class="price-tag">Rp ${item.harga.toLocaleString('id-ID')}</span></td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="startEdit(${item.id})">✏️ Edit</button>
+                        <button class="action-btn btn-delete" onclick="hapusData(${item.id})">❌ Hapus</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // 2. Simpan Data (CREATE & UPDATE)
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let database = JSON.parse(localStorage.getItem("database_produk")) || [];
+        const currentId = inputId.value;
+
+        if (currentId === "") {
+            // Mode Tambah
+            const baru = {
+                id: Date.now(),
+                nama: inputNama.value,
+                harga: Number(inputHarga.value),
+                kategori: inputKategori.value
+            };
+            database.push(baru);
+        } else {
+            // Mode Edit
+            const index = database.findIndex(p => p.id == currentId);
+            if (index !== -1) {
+                database[index].nama = inputNama.value;
+                database[index].harga = Number(inputHarga.value);
+                database[index].kategori = inputKategori.value;
+            }
+        }
+
+        localStorage.setItem("database_produk", JSON.stringify(database));
+        resetForm();
+        renderTabel();
+    });
+
+    // 3. Masuk ke Mode Edit
+    function startEdit(id) {
+        const database = JSON.parse(localStorage.getItem("database_produk")) || [];
+        const item = database.find(p => p.id == id);
+
+        if (item) {
+            formTitle.innerText = "✏️ Modifikasi Data Produk";
+            inputId.value = item.id;
+            inputNama.value = item.nama;
+            inputHarga.value = item.harga;
+            inputKategori.value = item.kategori;
+
+            btnSubmit.innerText = "Update Data Matrix";
+            btnBatal.style.display = "block";
+        }
+    }
+
+    // 4. Hapus Data (DELETE)
+    function hapusData(id) {
+        if(confirm("⚠ WARNING: Data akan dihapus permanen dari Matrix. Lanjutkan?")) {
+            let database = JSON.parse(localStorage.getItem("database_produk")) || [];
+            database = database.filter(p => p.id != id);
+            localStorage.setItem("database_produk", JSON.stringify(database));
+            renderTabel();
+        }
+    }
+
+    function resetForm() {
+        form.reset();
+        inputId.value = "";
+        formTitle.innerText = "➕ Injeksi Produk Baru";
+        btnSubmit.innerText = "Sync Data Produk";
+        btnBatal.style.display = "none";
+    }
+
+    // Jalankan render saat startup
+    window.onload = renderTabel;
+</script>
+
+</body>
+</html>
